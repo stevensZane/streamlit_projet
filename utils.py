@@ -4,7 +4,7 @@ import numpy as np
 from requests import get
 
 # fonction pour scraper les villas
-def scrap_villas(n):
+def scrap_villas(nbre_pages):
     data = {
         "type annonce": [],
         "nombre pieces": [],
@@ -13,7 +13,7 @@ def scrap_villas(n):
         "image lien": []
     }
     
-    for i in range(n):
+    for i in range(nbre_pages):
     
         url = 'https://sn.coinafrique.com/categorie/villas?page={n}'
         
@@ -54,40 +54,48 @@ def scrap_villas(n):
 
 # fonction pour scraper les terrains
 def scrap_terrains(nbre_page):
-    gdf = pd.DataFrame()
+    
+    df1 = pd.DataFrame()
+    
     for i in range(nbre_page):
+        
         url = 'https://sn.coinafrique.com/categorie/terrains?page={i}'
+        
+        data = []
+        
         res = get(url)
         soup = bs(res.text, 'html.parser')
         containers = soup.find_all("div",class_ = "col s6 m4 l3")
-        pdf = []
+        
         for container in containers:
             try:
                 img_link = container.find("img", class_="ad__card-img")["src"]
                 prix = int(container.find("p", class_="ad__card-price").text.replace(" ", "").replace("CFA", ""))
                 adresse = container.find("p", class_="ad__card-location").text.replace("location_on","")
-                href = container.find("a", class_="card-image ad__card-image waves-block waves-light")["href"]
-                urll = 'https://sn.coinafrique.com' + str(href)
-                resa = get(urll)
+                inner_link = container.find("a", class_="card-image ad__card-image waves-block waves-light")["href"]
+                url_enfant = 'https://sn.coinafrique.com' + inner_link
+                
+                resa = get(url_enfant)
                 soup = bs(resa.text, 'html.parser')
-                containerr = soup.find("div", class_="ad__info")
-                superficie = int(containerr.find("span", class_="qt").text.replace(" ", "").replace("m2", ""))
-                dict_terrain_infos = {
+                container__ = soup.find("div", class_="ad__info")
+                superficie = int(container__.find("span", class_="qt").text.replace(" ", "").replace("m2", ""))
+                
+                infos = {
                     "superficie": superficie,
                     "prix": prix,
                     "adresse": adresse,
                     "img_link": img_link,
                 }
-                pdf.append(dict_terrain_infos)
+                
+                data.append(infos)
             except:
                 pass
-        DF = pd.DataFrame(pdf)
-        gdf = pd.concat([gdf,DF],axis=0).reset_index(drop = True)
-    # Standardiser la colonne "prix" et remplacer "prixsurdemande" par NaN
-    gdf["prix"] = gdf["prix"].replace("Prixsurdemande", np.nan).astype(float)
-    # Remplacer les NaN par la moyenne des prix et convertir en int
-    gdf.fillna({"prix": gdf["prix"].mean()}, inplace = True)
-    return gdf
+        DF = pd.DataFrame(data)
+        
+        df1 = pd.concat([df1,DF],axis=0).reset_index(drop = True)
+
+
+    return df1
 
 # variable pour les formulaires
 google_forms = '<iframe src="https://docs.google.com/forms/d/e/1FAIpQLScIINigJlApa3cAGiSv4cmZMRUvjxyms6HmKoIdOQcrEeuSvA/viewform?embedded=true" width="700" height="650" frameborder="0" marginheight="0" marginwidth="0">Chargement…</iframe>'

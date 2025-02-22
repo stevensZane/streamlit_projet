@@ -5,16 +5,16 @@ import time
 import seaborn as sns
 import webbrowser
 import os
-from utils import scrap_coinafrique_terrains, scrap_coinafrique_villas, google_forms, kobo_forms, mot_inspirant, streamdata_logo
+from utils import scrap_terrains, scrap_villas , google_forms, kobo_forms, mot_inspirant, streamdata_logo
 
 # define the directory
-UPLOAD_DIR = "upload_files"
+UPLOAD_DIR = "data"
 
 # ceci c'est pour créer le repertoire là ou les fichiers seront sauvegarder s'il n'existes pas déjà
 if not os.path.exists(UPLOAD_DIR):
     os.mkdirs(UPLOAD_DIR)
 
-# lister tous les fichiers contenus dans upload_files
+# lister tous les fichiers contenus dans data
 files = os.listdir(UPLOAD_DIR)
 
 # La partie CSS pour le styling
@@ -134,19 +134,19 @@ elif st.session_state.selected_page == "Scraper":
             # Call the correct function based on selection
             if categorie == "Terrains":
                 with st.spinner("Scraping en cours..."):
-                    df = scrap_coinafrique_terrains(num_pages)
+                    df = scrap_terrains(num_pages)
                     while time.time() - start_time < 60:  # Limite de 60 secondes pour éviter un blocage
                         elapsed_time = time.time() - start_time
                         time.sleep(1)  # Pause d'une seconde pour rafraîchir l'affichage
-                reset_form()
+                        reset_form()
 
             else:
                 with st.spinner("Scraping en cours..."):
-                    df = scrap_coinafrique_villas(num_pages)
+                    df = scrap_villas(num_pages)
                     while time.time() - start_time < 60:  # Limite de 60 secondes pour éviter un blocage
                         elapsed_time = time.time() - start_time
                         time.sleep(1)  # Pause d'une seconde pour rafraîchir l'affichage
-                reset_form()
+                        reset_form()
 
 
             if not df.empty:

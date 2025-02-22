@@ -12,7 +12,7 @@ UPLOAD_DIR = "data"
 
 # ceci c'est pour créer le repertoire là ou les fichiers seront sauvegarder s'il n'existes pas déjà
 if not os.path.exists(UPLOAD_DIR):
-    os.mkdirs(UPLOAD_DIR)
+    os.makedirs(UPLOAD_DIR)
 
 # lister tous les fichiers contenus dans data
 files = os.listdir(UPLOAD_DIR)

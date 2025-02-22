@@ -5,3 +5,5 @@ pandas
 requests
 seaborn
 matplotlib
+scrap_coinafrique_terrains
+scrap_coinafrique_villas

@@ -8,7 +8,7 @@ import os
 from utils import scrap_terrains, scrap_villas , google_forms, kobo_forms, mot_inspirant, streamdata_logo
 
 # define the directory
-UPLOAD_DIR = "data"
+UPLOAD_DIR = "upload_files"
 
 # ceci c'est pour créer le repertoire là ou les fichiers seront sauvegarder s'il n'existes pas déjà
 if not os.path.exists(UPLOAD_DIR):
